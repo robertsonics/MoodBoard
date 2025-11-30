@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "*.mm": "cpp",
+        "cmath": "cpp",
+        "complex": "cpp",
+        "cstdlib": "cpp"
+    }
+}
