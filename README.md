@@ -1,4 +1,4 @@
-![ALT TEXT](/App/Assets/pedalboard.jpg)
+![ALT TEXT](/app/assets/pedalboard.jpg)
 
 ## Introduction
 
