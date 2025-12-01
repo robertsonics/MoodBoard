@@ -83,10 +83,12 @@ MainComponent::MainComponent() {
         }
     }
 
+    // Load our main window background image
     auto* data = BinaryData::pedalboard_jpg;
     int   size = BinaryData::pedalboard_jpgSize;
     backgroundImage = juce::ImageFileFormat::loadFrom(data, size);
 
+    // Set up our level meter
     addAndMakeVisible(levelMeter);
 
     audioDeviceManager.initialiseWithDefaultDevices(2, 2);
@@ -97,6 +99,9 @@ MainComponent::MainComponent() {
 
     setSize (800, 600);
 
+    // Call the function to look for and load our plugins. We do it this way
+    //  so that our main window has a chance to get painted before we put up
+    //  the scanning plugins dialog window
     juce::MessageManager::callAsync(
     [safe = juce::Component::SafePointer<MainComponent>(this)]
     {
@@ -109,16 +114,9 @@ MainComponent::MainComponent() {
 // ****************************************************************************
 MainComponent::~MainComponent() {
 
-    //loadedPlugin.reset();
-
-    // 2) Destroy any UI that might refer to plugin formats / knownPluginList
     scanDialog.reset();
-
     audioDeviceManager.removeAudioCallback(this);
-
     granularPluginWindow = nullptr;
-
-    // 2) Release plugin resources while no callbacks are running
     if (granularPlugin != nullptr) {
         granularPlugin->releaseResources();
         granularPlugin.reset();
@@ -135,11 +133,10 @@ void MainComponent::paint (juce::Graphics& g) {
         juce::RectanglePlacement::fillDestination);
     }
     else {
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
-
-    g.setFont (juce::FontOptions (16.0f));
-    g.setColour (juce::Colours::white);
-    g.drawText ("Hello World!", getLocalBounds(), juce::Justification::centred, true);
+        g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+        g.setFont (juce::FontOptions (16.0f));
+        g.setColour (juce::Colours::white);
+        g.drawText ("Mood Board", getLocalBounds(), juce::Justification::centred, true);
     }
 }
 
@@ -147,16 +144,14 @@ void MainComponent::paint (juce::Graphics& g) {
 void MainComponent::resized() {
 
     menuBar->setBounds (0, 0, getWidth(), 24);
-
     auto bounds = getLocalBounds();
         
-    // Create status bar at bottom (30 pixels high)
+    // Create status bar at bottom
     auto statusBar = bounds.removeFromBottom(20);
         
     // Position meter in status bar with some padding
     auto meterBounds = statusBar.reduced(1);
     levelMeter.setBounds(meterBounds);
-
 }
 
 // ****************************************************************************
@@ -213,7 +208,6 @@ void MainComponent::timerCallback(void) {
 
 // ****************************************************************************
 void MainComponent::audioDeviceAboutToStart(juce::AudioIODevice* device) {
-
 }
 
 // ****************************************************************************
@@ -296,9 +290,7 @@ void MainComponent::startPluginScan() {
     dialog->setAlwaysOnTop(true);
     dialog->setVisible(true);
     scanDialog.reset(dialog);
-
     addDefaultFormatsToManager(formatManager);
-
     juce::Timer::callAfterDelay (2000, [this]() {
         pluginScanner();
     });
@@ -344,12 +336,6 @@ void MainComponent::pluginScanner() {
 }
 
 // ****************************************************************************
-void MainComponent::pluginScanComplete() {
-
-    scanDialog = nullptr;
-}
-
-// ****************************************************************************
 void MainComponent::mouseDown(const MouseEvent& event) {
 
 int x, y;
@@ -367,5 +353,4 @@ int x, y;
         granularPluginWindow = std::make_unique<PluginWindow> (*granularPlugin);
     else
         granularPluginWindow->setVisible (true);
-
 }

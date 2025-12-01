@@ -35,12 +35,12 @@
 // CMake builds don't use an AppConfig.h, so it's safe to include juce module headers
 // directly. If you need to remain compatible with Projucer-generated builds, and
 // have called `juce_generate_juce_header(<thisTarget>)` in your CMakeLists.txt,
-// you could `#include <JuceHeader.h>` here instead, to make all your module headers visible.
+// you could `#include <JuceHeader.h>` here instead, to make all your module headers
+// visible.
 #include <JuceHeader.h>
 #include "Settings.h"
 #include "LevelMeter.h"
 #include "PluginWindow.h"
-//#include "PluginScanner.h"
 
 // ****************************************************************************
 // This component lives inside our window, and this is where you should put all
@@ -52,16 +52,13 @@ class MainComponent final : public juce::Component,
                             public juce::MenuBarModel
 {
 public:
-    //==============================================================================
+
     MainComponent();
     ~MainComponent() override;
-
-    //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
 
     void timerCallback() override;
-
     void menuItemSelected (int menuItemID, int) override;
     void mouseDown(const MouseEvent& event) override;
     
@@ -80,7 +77,6 @@ public:
 
     void startPluginScan();
     void pluginScanner();
-    void pluginScanComplete();
 
     static constexpr double mySampleRate = 44100.0;
     static constexpr int myBufferSize = 256;
