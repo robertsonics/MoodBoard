@@ -4,8 +4,12 @@ project(MoodBoard VERSION 0.1.0)
 
 juce_add_gui_app(${PROJECT_NAME}
     PRODUCT_NAME "MoodBoard"
-    ICON_BIG "${CMAKE_CURRENT_SOURCE_DIR}/Source/JUCEAppIcon.png"
+    ICON_BIG "${CMAKE_CURRENT_SOURCE_DIR}/assets/JUCEAppIcon.png"
+)
 
+juce_add_binary_data(AppData
+    SOURCES
+        assets/pedalboard.jpg
 )
 
 target_compile_definitions(${PROJECT_NAME}
@@ -36,7 +40,7 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        # GuiAppData            # If we'd created a binary data target, we'd link to it here
+        AppData
         juce::juce_gui_extra
         juce::juce_audio_basics
         juce::juce_audio_devices
